@@ -35,7 +35,7 @@ http-request 自定义上传实现
               :src="formData.imageUrl"
               class="avatar"
             />
-            
+
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
         </el-form-item>
@@ -89,8 +89,8 @@ http-request 自定义上传实现
   </div>
 </template>
 <script>
-import { uploadImg, deleteImg } from "../../api/image";
-import { addAdvert, updateAdvert } from "../../api/advert";
+import { uploadAdvertData, deleteImg } from "../../api/image";
+import { addAdvert, updateAdvert, getOneAdvertData } from "../../api/advert";
 
 export default {
   props: {
@@ -102,15 +102,15 @@ export default {
       type: Boolean,
       default: false,
     },
-    formData: {
-      type: Object,
-      default: {},
-    },
-    oldImageUrl: String,
+
+    id: Number,
     close: Function,
   },
   data() {
     return {
+      formData: {
+        imageUrl: "",
+      },
       rules: {
         // 校验规则
         imageUrl: [
@@ -131,11 +131,25 @@ export default {
       },
     };
   },
+  watch: {
+    id(val) {
+      if (val) {
+        this.findData();
+      }
+    },
+  },
   methods: {
     handleClose() {
       this.$refs["formData"].resetFields();
-      //   this.formData = {};
       this.close();
+    },
+    //获取广告详情数据
+    async findData() {
+      const res = await getOneAdvertData(this.id);
+      console.log(res);
+      if (res.code == 20000) {
+        this.formData = res.data;
+      }
     },
     //提交
     submitForm() {
@@ -177,7 +191,25 @@ export default {
     },
 
     //图片上传
-    uploadMainImg() {},
+    async uploadMainImg(val) {
+      //默认参数file,上传的文件
+      console.log(val.file);
+      //实例化new FormData对象
+      const obj = new FormData();
+      //将上传的文件信息保存到 new FormData
+      obj.append("file", val.file);
+      console.log(obj);
+      //调动图片上传接口
+      const res = await uploadAdvertData(obj);
+      console.log(res);
+      if (res.code == 20000) {
+        this.formData.imageUrl = res.data;
+      }else{
+        this.$message({
+          message:"上传失败"
+        })
+      }
+    },
   },
 };
 </script>

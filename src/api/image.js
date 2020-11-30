@@ -1,12 +1,12 @@
-import Server from "../utils/request";
-
-export function
-    // 上传图片
-    uploadImg(data = {}) {
+import request from "../utils/request";
+//上传图片接口
+export function uploadAdvertData(file) {
     return request({
-        url: `/article/file/upload`,
-        method: 'post',
-        data // data: data 简写
+        url: "/article/file/upload",
+        method: "POST",
+        data: {
+            file
+        }
     })
 }
 // 删除图片

@@ -81,10 +81,9 @@
     </el-table>
     <AdvertEdit
       :show="edit.show"
-      :formData="edit.formData"
+      :id="edit.id"
       :title="edit.title"
       :close="close"
-      :oldImageUrl="edit.oldImageUrl"
     ></AdvertEdit>
     <!-- 分页 -->
     <el-pagination
@@ -121,8 +120,7 @@ export default {
       edit: {
         title: "",
         show: false,
-        formData: {},
-        oldImageUrl: "",
+        id: 0,
       },
     };
   },
@@ -170,15 +168,10 @@ export default {
       this.edit.show = true;
     },
     //编辑
-    async onEdit(id) {
-      const res = await getOneAdvertData(id);
-      console.log(res);
-      if (res.code == 20000) {
-        this.edit.formData = res.data;
-        this.edit.show = true;
-        this.edit.title = "编辑";
-        this.edit.oldImageUrl = this.edit.formData.imageUrl;
-      }
+    onEdit(id) {
+      this.edit.id = id;
+      this.edit.show = true;
+      this.edit.title = "编辑";
     },
     //删除
     remove(id) {
@@ -220,7 +213,7 @@ export default {
 };
 </script>
 <style scoped>
-  .advert{
-    padding: 20px;
-  }
+.advert {
+  padding: 20px;
+}
 </style>
